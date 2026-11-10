@@ -1,18 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-<title>AI Image Generator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon AI Generator</title>
 <style>
-  body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-  #result { margin-top: 20px; }
-  img { max-width: 100%; height: auto; border-radius: 8px; }
+  :root {
+    --neon-green: #39ff14;
+    --neon-pink: #ff1493;
+    --bg-dark: #0f0f12;
+  }
+  body {
+    background-color: var(--bg-dark);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    color: var(--neon-green);
+    text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+  }
+  .input-group {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+  }
+  input[type="text"] {
+    flex-grow: 1;
+    background: #1e1e24;
+    border: 2px solid var(--neon-pink);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 0 5px var(--neon-pink);
+    outline: none;
+  }
+  input[type="text"]:focus {
+    box-shadow: 0 0 15px var(--neon-pink);
+  }
+  button {
+    background: transparent;
+    border: 2px solid var(--neon-green);
+    color: var(--neon-green);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    text-shadow: 0 0 5px var(--neon-green);
+    box-shadow: 0 0 5px var(--neon-green);
+    transition: all 0.3s ease;
+  }
+  button:hover {
+    background: var(--neon-green);
+    color: #000;
+    box-shadow: 0 0 20px var(--neon-green);
+  }
+  #result {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 12px;
+    box-shadow: 0 0 25px var(--neon-pink);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--neon-pink);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-top: 50px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
 
 <h1>AI Image Generator</h1>
-<input type="text" id="prompt" placeholder="Describe the image" style="width: 300px; padding: 10px;">
-<button onclick="generateImage()" style="padding: 10px;">Generate</button>
+
+<div class="input-group">
+  <input type="text" id="prompt" placeholder="कल्पना करें और लिखें...">
+  <button onclick="generateImage()">Generate</button>
+</div>
 
 <div id="result"></div>
 
@@ -22,7 +109,9 @@ async function generateImage() {
   const apiKey = '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';
   const resultDiv = document.getElementById('result');
   
-  resultDiv.innerText = 'Loading...';
+  if(!prompt.trim()) return;
+
+  resultDiv.innerHTML = '<div class="loader"></div>';
 
   try {
     const response = await fetch(
@@ -39,13 +128,12 @@ async function generateImage() {
 
     const blob = await response.blob();
     const imageUrl = URL.createObjectURL(blob);
-    resultDiv.innerHTML = `<img src="${imageUrl}">`;
+    resultDiv.innerHTML = `<img src="${imageUrl}" alt="Generated Image">`;
   } catch (error) {
-    resultDiv.innerText = 'Failed to generate image.';
+    resultDiv.innerHTML = '<p style="color:red;">Failed to generate image.</p>';
   }
 }
 </script>
 
 </body>
 </html>
-
